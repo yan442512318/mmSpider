@@ -16,15 +16,6 @@ import json
 # 数据存储
 import pymongo
 
-# company = [
-#     "新浪", "搜狐","途牛","银联","小红书","趣头条","飞利浦","美团",
-#     "360金融","度小满","网易","拼多多","平安","银行","爱奇艺","哔哩哔哩"
-# ]
-
-# company = [
-#     "专家"
-# ]
-
 company = [
     "字节跳动", "拼多多", "阿里巴巴", "快手"
 ]
@@ -53,7 +44,7 @@ def get_page_index(keyword, page):
         print("Error! Status code: " + reponse.status_code)
         return None
     except ConnectionError:
-        print("连接错误")
+        print("Connect Error!")
         return None
 
 def parse_index(html):
@@ -62,43 +53,23 @@ def parse_index(html):
     employees = doc['data']['contacts']
 
     for eply in employees:
-        if 'encode_mmid' not in eply['contact'].keys():
-            yield {
-                'flag': 'no_detail',
-                'uid': eply['uid'],
-                'name': eply['contact']['name'],
-                'status': eply['contact']['status'],
-                'rank': eply['contact']['rank'],
-                'gender': eply['contact']['gender'],
-                'position': eply['contact']['position'],
-                'profession': eply['contact']['profession'],
-                'province': eply['contact']['province'],
-                'city': eply['contact']['city'],
-                'company': eply['contact']['company'],
-                'pf_name1': eply['contact']['user_pfmj']['pf_name1'],
-                'mj_name1': eply['contact']['user_pfmj']['mj_name1'],
-                'line3': eply['contact']['line3'],
-                'line4': eply['contact']['line4'],
-                'url': None
-            }
-        else:
-            yield {
-                'flag': 'detail',
-                'uid': eply['uid'],
-                'name': eply['contact']['name'],
-                'status': eply['contact']['status'],
-                'rank': eply['contact']['rank'],
-                'gender': eply['contact']['gender'],
-                'position': eply['contact']['position'],
-                'profession': eply['contact']['profession'],
-                'province': eply['contact']['province'],
-                'city': eply['contact']['city'],
-                'company': eply['contact']['company'],
-                'pf_name1': eply['contact']['user_pfmj']['pf_name1'],
-                'mj_name1': eply['contact']['user_pfmj']['mj_name1'],
-                'line3': eply['contact']['line3'],
-                'line4': eply['contact']['line4'],
-                'url': "https://maimai.cn/contact/detail/" + eply['contact']['encode_mmid']
+        yield {
+            'flag': 'no_detail' if 'encode_mmid' not in eply['contact'].keys() else 'detail',
+            'uid': eply['uid'],
+            'name': eply['contact']['name'],
+            'status': eply['contact']['status'],
+            'rank': eply['contact']['rank'],
+            'gender': eply['contact']['gender'],
+            'position': eply['contact']['position'],
+            'profession': eply['contact']['profession'],
+            'province': eply['contact']['province'],
+            'city': eply['contact']['city'],
+            'company': eply['contact']['company'],
+            'pf_name1': eply['contact']['user_pfmj']['pf_name1'],
+            'mj_name1': eply['contact']['user_pfmj']['mj_name1'],
+            'line3': eply['contact']['line3'],
+            'line4': eply['contact']['line4'],
+            'url': None if 'encode_mmid' not in eply['contact'].keys() else "https://maimai.cn/contact/detail/" + eply['contact']['encode_mmid']
             }
 
 def get_detail(url):
@@ -230,8 +201,6 @@ if __name__ == "__main__":
         print("Company: "+key2)
         for i in range(1, 10):
             logging.info("KEYWORD: " + key2 + " " + KEYWORD)
-            print("************************")
             logging.info("Page " + str(i) + ":")
-            print("************************")
             main(key2 + " " + KEYWORD, i)
 
