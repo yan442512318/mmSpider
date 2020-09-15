@@ -151,7 +151,6 @@ def parse_detail(html):
 
     return {
         'uid': uid,
-        'name': name,
         'rank':rank,
         'province': province,
         'city': city,
