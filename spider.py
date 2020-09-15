@@ -56,10 +56,8 @@ def parse_index(html):
         yield {
             'flag': 'no_detail' if 'encode_mmid' not in eply['contact'].keys() else 'detail',
             'uid': eply['uid'],
-            'name': eply['contact']['name'],
             'status': eply['contact']['status'],
             'rank': eply['contact']['rank'],
-            'gender': eply['contact']['gender'],
             'position': eply['contact']['position'],
             'profession': eply['contact']['profession'],
             'province': eply['contact']['province'],
@@ -105,7 +103,6 @@ def parse_detail(html):
 
     # 整理详情页数据
     uid = check_re('"uid":(.*?),', detail)
-    name = check_re('"name":"(.*?)",', detail)
     rank = check_re('"rank":(\d+)', detail)
     province = check_re('"province":"(.*?)"', detail)
     city = check_re('"city":"(.*?)",', detail)
